@@ -1,0 +1,49 @@
+FROM nginx:latest
+ 
+# LABEL maintainer="Anuraag"
+ 
+# Install PHP and required extensions
+RUN apt-get update && apt-get install -y \
+    php8.2 \
+    php8.2-fpm \
+    php8.2-mysql \
+    php8.2-redis \
+    php8.2-gd \
+    php8.2-zip \
+    php8.2-xml \
+    php8.2-curl
+ 
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+ 
+# Set working directory
+WORKDIR /var/www
+ 
+# Copy Laravel application files
+# COPY . .
+ 
+# Install Laravel dependencies
+# RUN composer install --no-dev --optimize-autoloader
+ 
+# Set environment variables
+# ENV APP_ENV=production
+# ENV APP_KEY=your_app_key
+# ENV DB_HOST=mysql
+# ENV DB_PORT=3306
+# ENV DB_DATABASE=your_database
+# ENV DB_USERNAME=your_username
+# ENV DB_PASSWORD=your_password
+ 
+# Expose port 80
+# EXPOSE 80
+
+COPY ./devops-scripts/start.sh /start.sh
+
+# RUN chmod 775 /var/www/storage/logs/laravel.log
+# RUN chown $USER:www-data /var/www/storage/logs/laravel.log
+
+# # Start the web server
+CMD ["/start.sh"]
+ 
+# Start PHP-FPM and Nginx
+# CMD service php8.2-fpm start && nginx -g "daemon off;"

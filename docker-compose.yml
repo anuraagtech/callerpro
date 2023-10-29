@@ -1,0 +1,67 @@
+version: '3'
+services:
+  
+  #PHP Service
+  app:
+    build:
+      # args:
+      #   user: anuraag
+      #   uid: 1000
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    restart: unless-stopped
+    tty: true
+    # ports:
+    #   - "80:80"
+    #   - "443:443"
+    working_dir: /var/www
+    volumes:
+      - ./callerpro:/var/www
+      # - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      # - ./nginx/conf.d/:/etc/nginx/conf.d/
+      # - ./nginx/sites-available/callerpro.conf:/etc/nginx/sites-available/callerpro.conf
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - app-network
+
+  # # Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./callerpro:/var/www
+      # - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+      # - ./nginx/sites-available/callerpro.conf:/etc/nginx/sites-available/callerpro.conf
+    networks:
+      - app-network
+
+  #MySQL Service
+  db:
+    image: mysql:5.7.22
+    container_name: db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: your_mysql_root_password
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./dbdata:/var/lib/mysql/
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - app-network
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
