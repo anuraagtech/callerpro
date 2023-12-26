@@ -25,6 +25,26 @@ services:
     networks:
       - app-network
 
+  # agent:
+  #   container_name: newrelic-infra
+  #   build:
+  #     context: .
+  #     dockerfile: newrelic-infra.dockerfile
+  #   cap_add:
+  #     - SYS_PTRACE
+  #   network_mode: host
+  #   pid: host
+  #   privileged: true
+  #   volumes:
+  #     # - ".:/host:ro"
+  #     # - "/var/run/docker.sock:/var/run/docker.sock"
+  #   restart: unless-stopped
+
+  # newrelic-apm-daemon:
+  #   image: newrelic/php-daemon:9.12.0
+  #   ports:
+  #       - "31339:31339"
+
   # # Nginx Service
   webserver:
     image: nginx:alpine

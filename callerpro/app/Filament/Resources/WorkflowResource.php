@@ -103,5 +103,20 @@ class WorkflowResource extends Resource
             'create' => Pages\CreateWorkflow::route('/create'),
             'edit' => Pages\EditWorkflow::route('/{record}/edit'),
         ];
-    }    
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        // dd(CompanyController::class->index());
+        // return parent::getEloquentQuery()->whereBelongsTo(auth()->user());
+        if(auth()->user()->user_type == 'Admin' || auth()->user()->user_type == 'SubAdmin') {
+            return parent::getEloquentQuery()->where('user_id', '!=', '0');
+        }
+        // return parent::getEloquentQuery()->where('user_id', '=', auth()->id());
+        // return parent::getEloquentQuery()->hasRole('Admin');
+        // dd(auth()->user()->user_type);
+
+
+        return parent::getEloquentQuery()->where('user_id', '=', auth()->id());
+    }
 }
